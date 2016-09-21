@@ -6,22 +6,29 @@ package com.idgoSoft.trade.transformer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.function.ToDoubleFunction;
+import java.util.stream.Collectors;
 
 import com.idgoSoft.trade.data.DataFeed;
+import com.idgoSoft.trade.data.IndicatorPojo;
 
 /**
  * @author srikanth.vaddella
  *
  */
 public class Transformer {
+	
+	private IndicatorPojo indicatorPojo;
+	ToDoubleFunction<DataFeed> averageCaluction = dataFeed -> dataFeed.getClose();
 
     /**
      * @param listOfStockData
      * @return
      */
     public List<DataFeed> dataFeedPreparation(ArrayList<LinkedHashMap<String, ? extends Number>> listOfStockData) {
-	ArrayList<DataFeed> arrayListDataFeed = new ArrayList<DataFeed>();
-	listOfStockData.stream().forEach(mappedData -> {
+    	indicatorPojo = new IndicatorPojo();
+    	ArrayList<DataFeed> arrayListDataFeed = new ArrayList<DataFeed>();
+    	listOfStockData.stream().forEach(mappedData -> {
 	    final DataFeed dataFeed = new DataFeed();
 	    dataFeed.setClose((Double) mappedData.get("close"));
 	    dataFeed.setHigh((Double) mappedData.get("high"));
@@ -31,6 +38,7 @@ public class Transformer {
 	    dataFeed.setTimestamp((int) mappedData.get("Timestamp"));
 	    arrayListDataFeed.add(dataFeed);
 	});
+    	indicatorPojo.setDatafeedList(arrayListDataFeed);
 	return arrayListDataFeed;
 
     }
@@ -39,10 +47,42 @@ public class Transformer {
      * @param listOfStockData
      * @return
      */
-    public List<DataFeed> dataFeedCalPreparation(List<DataFeed> mappedData) {
-	ArrayList<DataFeed> arrayListDataFeed = new ArrayList<DataFeed>();
-
-	return arrayListDataFeed;
+    public IndicatorPojo dataFeedCalPreparation(IndicatorPojo indicatorPojo) {	
+    	indicatorPojo.setAverage(indicatorPojo.getDatafeedList().stream().collect(Collectors.averagingDouble(averageCaluction)));
+    	
+    	
+	
+    return indicatorPojo;
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
