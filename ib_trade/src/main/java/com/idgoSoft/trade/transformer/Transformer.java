@@ -6,6 +6,8 @@ package com.idgoSoft.trade.transformer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
@@ -50,9 +52,13 @@ public class Transformer {
     public IndicatorPojo dataFeedCalPreparation(IndicatorPojo indicatorPojo) {	
     	indicatorPojo.setAverage(indicatorPojo.getDatafeedList().stream().collect(Collectors.averagingDouble(averageCaluction)));
     	
-    	
+    	Supplier<ArrayList<DataFeed>> supplier = () -> new ArrayList<>();
+    	BiConsumer<ArrayList<DataFeed>, DataFeed>  accumulator = (list, name)  ->  list.add(name);
+		BiConsumer<ArrayList<DataFeed>, ArrayList<DataFeed>>  combiner = (list, name)  ->  list.addAll(name);
+		
+		List<DataFeed> listOfDatafeed = indicatorPojo.getDatafeedList().subList(0, 10).stream().collect(supplier, accumulator, combiner);
 	
-    return indicatorPojo;
+    	return indicatorPojo;
 
     }
 }
