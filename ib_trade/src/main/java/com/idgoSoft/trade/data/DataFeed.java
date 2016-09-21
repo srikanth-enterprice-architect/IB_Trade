@@ -16,8 +16,43 @@ public class DataFeed {
     private double open;
     private int volume;
     private double macd;
+    private double ema_1;
+    private double ema_2;
+    
+    
+    
+    
+    
 
     /**
+	 * @return the ema_1
+	 */
+	public double getEma_1() {
+		return ema_1;
+	}
+
+	/**
+	 * @param ema_1 the ema_1 to set
+	 */
+	public void setEma_1(double ema_1) {
+		this.ema_1 = ema_1;
+	}
+
+	/**
+	 * @return the ema_2
+	 */
+	public double getEma_2() {
+		return ema_2;
+	}
+
+	/**
+	 * @param ema_2 the ema_2 to set
+	 */
+	public void setEma_2(double ema_2) {
+		this.ema_2 = ema_2;
+	}
+
+	/**
      * @return the macd
      */
     public double getMacd() {

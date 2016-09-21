@@ -41,6 +41,7 @@ public class Transformer {
 	    arrayListDataFeed.add(dataFeed);
 	});
     	indicatorPojo.setDatafeedList(arrayListDataFeed);
+    	dataFeedCalPreparation(indicatorPojo);
 	return arrayListDataFeed;
 
     }
@@ -50,14 +51,23 @@ public class Transformer {
      * @return
      */
     public IndicatorPojo dataFeedCalPreparation(IndicatorPojo indicatorPojo) {	
-    	indicatorPojo.setAverage(indicatorPojo.getDatafeedList().stream().collect(Collectors.averagingDouble(averageCaluction)));
+    	indicatorPojo.setAverage(indicatorPojo.getDatafeedList().stream().limit(12).collect(Collectors.averagingDouble(averageCaluction)));
     	
     	Supplier<ArrayList<DataFeed>> supplier = () -> new ArrayList<>();
-    	BiConsumer<ArrayList<DataFeed>, DataFeed>  accumulator = (list, name)  ->  list.add(name);
+    	BiConsumer<ArrayList<DataFeed>, DataFeed>  accumulator = (list, name)  ->  {
+    		name.setEma_1(indicatorPojo.getAverage());
+    		if(list.size() == 0){
+    			name.setEma_1(indicatorPojo.getAverage());
+    		}else{
+    			name.setEma_1(name.getClose()*(2/12+1+ list.get(list.size()-1).getEma_1()*(1-(2/12+1)) ));
+    		}
+    		list.add(name);
+    		};
 		BiConsumer<ArrayList<DataFeed>, ArrayList<DataFeed>>  combiner = (list, name)  ->  list.addAll(name);
 		
-		List<DataFeed> listOfDatafeed = indicatorPojo.getDatafeedList().subList(0, 10).stream().collect(supplier, accumulator, combiner);
+		List<DataFeed> listOfDatafeed = indicatorPojo.getDatafeedList().stream().skip(11).collect(supplier, accumulator, combiner);
 	
+		indicatorPojo.setResultedDataFeed(listOfDatafeed);
     	return indicatorPojo;
 
     }
