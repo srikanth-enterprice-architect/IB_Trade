@@ -1,12 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ftp="http://www.mulesoft.org/schema/mule/ee/ftp" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/ee/ftp/current/mule-ftp-ee.xsd">
-    <flow name="ib_tradeFlow">
-        <ftp:inbound-endpoint host="localhost" port="21" responseTimeout="10000" doc:name="FTP"/>
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration"/>
+    <http:request-config name="HTTP_Request_Configuration" host="www.google.com" port="8080" basePath="/finance/getprices" doc:name="HTTP Request Configuration" protocol="HTTPS"/>
+    <vm:connector name="VM" validateConnections="true" doc:name="VM"/>
+    <http:request-config name="Http_DataFeed_From_Yahoo" host="chartapi.finance.yahoo.com" port="80" basePath="/instrument/1.0/" doc:name="HTTP Request Configuration"/>
+    <spring:beans>
+        <spring:bean id="transformer" name="transformer" class="com.idgoSoft.trade.transformer.Transformer"/>
+    </spring:beans>
+    <file:connector name="File" outputPattern="sri.txt" autoDelete="false" streaming="true" validateConnections="true" doc:name="File"/>
+    <vm:connector name="VM1" validateConnections="true" doc:name="VM"/>
+    <flow name="DataFeed_From_Google">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/path" doc:name="HTTP"/>
+        <http:request config-ref="HTTP_Request_Configuration" path="/?q=SBIN&amp;x=NSE&amp;i=60&amp;p=1Y&amp;f=d,c,v,o,h,l&amp;df=cpct&amp;auto=1&amp;ts=1472100235046&amp;ei=WWm-V_mePIiRsgHP0oLQDQ" method="GET" doc:name="DataFeed_From_Google" doc:description="https://www.google.com/finance/getprices?q=SBIN&amp;x=NSE&amp;i=60&amp;p=1Y&amp;f=d,c,v,o,h,l&amp;df=cpct&amp;auto=1&amp;ts=1472100235046&amp;ei=WWm-V_mePIiRsgHP0oLQDQ"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+    <flow name="DataFeed_From_Yahoo">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
+        <http:request config-ref="Http_DataFeed_From_Yahoo" path="sbin.ns/chartdata;type=quote;range=1d/json" method="GET" doc:name="DataFeed_From_Yahoo_http_Connection" requestStreamingMode="NEVER" sendBodyMode="NEVER"/>
+        <vm:outbound-endpoint exchange-pattern="one-way" path="/yahoo_transformer" connector-ref="VM" doc:name="VM"/>
+    </flow>
+    <flow name="tradeFlow">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="/yahoo_transformer" connector-ref="VM" doc:name="yahoo_transformer"/>
+        <byte-array-to-object-transformer returnClass="java.lang.String" doc:name="Byte Array to Object"/>
+        <set-payload value="#[payload.substring(30,payload.length()-2)]" doc:name="Set Payload"/>
+        <json:json-to-object-transformer returnClass="java.lang.Object" doc:name="JSON to Object"/>
+        <invoke object-ref="transformer" method="dataFeedPreparation" methodArguments="#[payload.series]" methodArgumentTypes="java.util.ArrayList" doc:name="Transformer"/>
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
     </flow>
 </mule>
