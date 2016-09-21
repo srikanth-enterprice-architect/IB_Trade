@@ -57,6 +57,7 @@ public class Transformer {
     	BiConsumer<ArrayList<DataFeed>, DataFeed>  accumulator = (list, name)  ->  {
     		name.setEma_1(indicatorPojo.getAverage());
     		if(list.size() == 0){
+    			
     			name.setEma_1(indicatorPojo.getAverage());
     		}else{
     			name.setEma_1(name.getClose()*(2/12+1+ list.get(list.size()-1).getEma_1()*(1-(2/12+1)) ));

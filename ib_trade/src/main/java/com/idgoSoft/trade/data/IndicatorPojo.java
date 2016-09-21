@@ -15,11 +15,21 @@ public class IndicatorPojo {
 	private List<DataFeed> datafeedList;
 	private List<DataFeed> resultedDataFeed;
 	private double average;
+	private double average2;
 	
 	
-	
-	
-	
+	/**
+	 * @return the average2
+	 */
+	public double getAverage2() {
+		return average2;
+	}
+	/**
+	 * @param average2 the average2 to set
+	 */
+	public void setAverage2(double average2) {
+		this.average2 = average2;
+	}
 	/**
 	 * @return the resultedDataFeed
 	 */
