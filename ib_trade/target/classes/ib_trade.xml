@@ -28,11 +28,11 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
     <flow name="DataFeed_From_Yahoo">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
         <http:request config-ref="Http_DataFeed_From_Yahoo" path="sbin.ns/chartdata;type=quote;range=1d/json" method="GET" doc:name="DataFeed_From_Yahoo_http_Connection" requestStreamingMode="NEVER" sendBodyMode="NEVER"/>
+        <byte-array-to-object-transformer returnClass="java.lang.String" doc:name="Byte Array to Object"/>
         <vm:outbound-endpoint exchange-pattern="one-way" path="/yahoo_transformer" connector-ref="VM" doc:name="VM"/>
     </flow>
     <flow name="tradeFlow">
         <vm:inbound-endpoint exchange-pattern="one-way" path="/yahoo_transformer" connector-ref="VM" doc:name="yahoo_transformer"/>
-        <byte-array-to-object-transformer returnClass="java.lang.String" doc:name="Byte Array to Object"/>
         <set-payload value="#[payload.substring(30,payload.length()-2)]" doc:name="Set Payload"/>
         <json:json-to-object-transformer returnClass="java.lang.Object" doc:name="JSON to Object"/>
         <invoke object-ref="transformer" method="dataFeedPreparation" methodArguments="#[payload.series]" methodArgumentTypes="java.util.ArrayList" doc:name="Transformer"/>

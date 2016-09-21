@@ -13,8 +13,25 @@ import java.util.List;
 public class IndicatorPojo {
 	
 	private List<DataFeed> datafeedList;
+	private List<DataFeed> resultedDataFeed;
 	private double average;
 	
+	
+	
+	
+	
+	/**
+	 * @return the resultedDataFeed
+	 */
+	public List<DataFeed> getResultedDataFeed() {
+		return resultedDataFeed;
+	}
+	/**
+	 * @param resultedDataFeed the resultedDataFeed to set
+	 */
+	public void setResultedDataFeed(List<DataFeed> resultedDataFeed) {
+		this.resultedDataFeed = resultedDataFeed;
+	}
 	/**
 	 * @return the datafeedList
 	 */
