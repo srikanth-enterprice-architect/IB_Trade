@@ -18,13 +18,41 @@ public class DataFeed {
     private double macd;
     private double ema_1;
     private double ema_2;
-    
-    
-    
-    
+    private double signal;
+    private double histogram;
+
+
     
 
     /**
+	 * @return the signal
+	 */
+	public double getSignal() {
+		return signal;
+	}
+
+	/**
+	 * @param signal the signal to set
+	 */
+	public void setSignal(double signal) {
+		this.signal = signal;
+	}
+
+	/**
+	 * @return the histogram
+	 */
+	public double getHistogram() {
+		return histogram;
+	}
+
+	/**
+	 * @param histogram the histogram to set
+	 */
+	public void setHistogram(double histogram) {
+		this.histogram = histogram;
+	}
+
+	/**
 	 * @return the ema_1
 	 */
 	public double getEma_1() {
