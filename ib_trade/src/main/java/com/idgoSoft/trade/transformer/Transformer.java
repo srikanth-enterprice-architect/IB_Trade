@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
-import com.IdgoSoft.Trade.core.excel.ExcelPreparation;
+import com.idgoSoft.trade.core.excel.ExcelPreparation;
 import com.idgoSoft.trade.data.DataFeed;
 import com.idgoSoft.trade.data.IndicatorPojo;
 

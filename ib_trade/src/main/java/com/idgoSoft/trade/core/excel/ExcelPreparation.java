@@ -1,4 +1,4 @@
-package com.IdgoSoft.Trade.core.excel;
+package com.idgoSoft.trade.core.excel;
 
 import java.io.File;
 import java.io.FileOutputStream;
