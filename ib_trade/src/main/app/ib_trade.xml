@@ -18,14 +18,12 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
     <spring:beans>
         <spring:bean id="transformer" name="transformer" class="com.idgoSoft.trade.transformer.Transformer"/>
     </spring:beans>
-    <file:connector name="File" outputPattern="sri.txt" autoDelete="false" streaming="true" validateConnections="true" doc:name="File"/>
+    <file:connector name="File" outputPattern="sr.xlsx" autoDelete="false" streaming="true" validateConnections="true" doc:name="File"/>
     <vm:connector name="VM1" validateConnections="true" doc:name="VM"/>
     <flow name="DataFeed_From_Google">
-    
         <http:listener config-ref="HTTP_Listener_Configuration" path="/path" doc:name="HTTP"/>
         <http:request config-ref="HTTP_Request_Configuration" path="/?q=SBIN&amp;x=NSE&amp;i=60&amp;p=1Y&amp;f=d,c,v,o,h,l&amp;df=cpct&amp;auto=1&amp;ts=1472100235046&amp;ei=WWm-V_mePIiRsgHP0oLQDQ" method="GET" doc:name="DataFeed_From_Google" doc:description="https://www.google.com/finance/getprices?q=SBIN&amp;x=NSE&amp;i=60&amp;p=1Y&amp;f=d,c,v,o,h,l&amp;df=cpct&amp;auto=1&amp;ts=1472100235046&amp;ei=WWm-V_mePIiRsgHP0oLQDQ"/>
         <logger level="INFO" doc:name="Logger"/>
-        
     </flow>
     <flow name="DataFeed_From_Yahoo">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
@@ -38,6 +36,6 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
         <set-payload value="#[payload.substring(30,payload.length()-2)]" doc:name="Set Payload"/>
         <json:json-to-object-transformer returnClass="java.lang.Object" doc:name="JSON to Object"/>
         <invoke object-ref="transformer" method="dataFeedPreparation" methodArguments="#[payload.series]" methodArgumentTypes="java.util.ArrayList" doc:name="Transformer"/>
-        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+        <file:outbound-endpoint path="/home/srikanth.vaddella/Desktop" outputPattern="sr.xlsx" connector-ref="File" responseTimeout="10000" doc:name="File" mimeType="application/csv"/>
     </flow>
 </mule>
