@@ -21,6 +21,7 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
     <file:connector name="File" outputPattern="sri.txt" autoDelete="false" streaming="true" validateConnections="true" doc:name="File"/>
     <vm:connector name="VM1" validateConnections="true" doc:name="VM"/>
     <flow name="DataFeed_From_Google">
+    
         <http:listener config-ref="HTTP_Listener_Configuration" path="/path" doc:name="HTTP"/>
         <http:request config-ref="HTTP_Request_Configuration" path="/?q=SBIN&amp;x=NSE&amp;i=60&amp;p=1Y&amp;f=d,c,v,o,h,l&amp;df=cpct&amp;auto=1&amp;ts=1472100235046&amp;ei=WWm-V_mePIiRsgHP0oLQDQ" method="GET" doc:name="DataFeed_From_Google" doc:description="https://www.google.com/finance/getprices?q=SBIN&amp;x=NSE&amp;i=60&amp;p=1Y&amp;f=d,c,v,o,h,l&amp;df=cpct&amp;auto=1&amp;ts=1472100235046&amp;ei=WWm-V_mePIiRsgHP0oLQDQ"/>
         <logger level="INFO" doc:name="Logger"/>
