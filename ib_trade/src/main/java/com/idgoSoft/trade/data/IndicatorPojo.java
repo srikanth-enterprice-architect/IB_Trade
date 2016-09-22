@@ -3,6 +3,7 @@
  */
 package com.idgoSoft.trade.data;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -16,8 +17,15 @@ public class IndicatorPojo {
 	private List<DataFeed> resultedDataFeed;
 	private double average;
 	private double average2;
+	private List<HashMap<String,String>> objectTomap;
 	
-	
+
+	public List<HashMap<String, String>> getObjectTomap() {
+		return objectTomap;
+	}
+	public void setObjectTomap(List<HashMap<String, String>> objectTomap) {
+		this.objectTomap = objectTomap;
+	}
 	/**
 	 * @return the average2
 	 */
