@@ -23,14 +23,10 @@ public class Transformer {
 
 	private IndicatorPojo indicatorPojo;
 	ToDoubleFunction<DataFeed> averageCaluction = dataFeed -> {
-		System.out.println(dataFeed.getClose());
-		return dataFeed.getClose();
-	};
+		return dataFeed.getClose();	};
 	
 	ToDoubleFunction<DataFeed> averageCaluction1 = dataFeed -> {
-		System.out.println(dataFeed.getClose());
-		return dataFeed.getMacd();
-	};
+		return dataFeed.getMacd();	};
 
 	/**
 	 * @param listOfStockData
@@ -74,17 +70,10 @@ public class Transformer {
 	 */
 	public IndicatorPojo dataFeedCalPreparation(IndicatorPojo indicatorPojo) {
 
-		indicatorPojo.setAverage(indicatorPojo.getDatafeedList().stream()
-				.limit(12)
-				.collect(Collectors.averagingDouble(averageCaluction)));
-		indicatorPojo.setAverage2(indicatorPojo.getDatafeedList().stream()
-				.limit(26)
-				.collect(Collectors.averagingDouble(averageCaluction)));
-		List<DataFeed> listOfDatafeed = indicatorPojo
-				.getDatafeedList()
-				.stream()
-				.skip(12)
-				.collect(ArrayList<DataFeed>::new,
+		indicatorPojo.setAverage(indicatorPojo.getDatafeedList().stream().limit(12).collect(Collectors.averagingDouble(averageCaluction)));
+		indicatorPojo.setAverage2(indicatorPojo.getDatafeedList().stream().limit(26).collect(Collectors.averagingDouble(averageCaluction)));
+		List<DataFeed> listOfDatafeed = indicatorPojo.getDatafeedList().stream().collect(
+				        ArrayList<DataFeed>::new,
 						caluclateIndicators(indicatorPojo),
 						ArrayList<DataFeed>::addAll);
 		indicatorPojo.setResultedDataFeed(listOfDatafeed);
@@ -107,47 +96,42 @@ public class Transformer {
 	 * @param name
 	 */
 	public void caluclate(IndicatorPojo indicatorPojo,	ArrayList<DataFeed> list, DataFeed dataFeed) {
-		double ema;
-		double ema2;
-		double ema_1 = 0;
-		double ema_2;
 		int size = list.size();
+		double a = (12+1);
+		double a1 = (2/a);
+		
+		double b = (26+1);
+		double b1 = (2/b);
+		
+		double c = (9+1);
+		double c1 = (2/c);
+		
+		if (size == 11) {
+			dataFeed.setEma_1(indicatorPojo.getAverage());
+		}
+		if (size > 11) {
+			dataFeed.setEma_1(dataFeed.getClose() * a1 + (list.get(size - 1).getEma_1()) * (1 - a1));
+		}
+		if (size == 25) {
+			dataFeed.setEma_2(indicatorPojo.getAverage2());
+			dataFeed.setMacd(dataFeed.getEma_1() - dataFeed.getEma_2());
+		}
+		if (size > 25) {
+			dataFeed.setEma_2((dataFeed.getClose() * b1 + (list.get(size - 1).getEma_2()) * (1 - b1)));
+			dataFeed.setMacd(dataFeed.getEma_1() - dataFeed.getEma_2());
 
-		double average = indicatorPojo.getAverage();
-		double average2 = indicatorPojo.getAverage2();
-		double close = dataFeed.getClose();
-		double signalAvg;
-
-		if (size == 0) {
-			dataFeed.setEma_1(average);
 		}
-		if (size > 0) {
-			ema = list.get(size - 1).getEma_1();
-			ema_1 = (close * (2 / (12 + 1)) + ema * (1 - (2 / (12 + 1))));
-			dataFeed.setEma_1(ema_1);
-		}
-		if (size == 14) {
-			dataFeed.setEma_2(average2);
-			dataFeed.setMacd(ema_1 - average2);
-		}
-		if (size > 14) {
-			ema2 = list.get(size - 1).getEma_2();
-			ema_2 = (close * (2 / (26 + 1)) + ema2 * (1 - (2 / (26 + 1))));
-			dataFeed.setEma_2(ema_2);
-			dataFeed.setMacd(ema_1 - ema_2);
-
-		}
-		if (size == 22) {
-			signalAvg = list.stream().skip(13).collect(Collectors.averagingDouble(averageCaluction1));
-			dataFeed.setSignal(signalAvg);
+		if (size == 33) {
+			dataFeed.setSignal(list.stream().skip(25).collect(Collectors.averagingDouble(averageCaluction1)));
 			dataFeed.setHistogram(dataFeed.getMacd() - dataFeed.getSignal());
 		}
 
-		if (size > 22) {
-			double signal = (dataFeed.getMacd() * (2 / (9 + 1)) + (list.get(size-1).getSignal() - 1) * (1 - (2 / (9 + 1))));
-			dataFeed.setSignal(signal);
+		if (size > 33) {
+			dataFeed.setSignal(dataFeed.getMacd() * c1 + (list.get(size-1).getSignal() - 1) * (1 - c1));
 			dataFeed.setHistogram(dataFeed.getMacd() - dataFeed.getSignal());
 		}
+		
+		System.out.println(dataFeed.toString());
 		list.add(dataFeed);
 	}
 
