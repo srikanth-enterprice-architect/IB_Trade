@@ -1,57 +1,81 @@
 package com.idgoSoft.trade.core.excel;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
+import com.idgoSoft.trade.data.DataFeed;
 import com.idgoSoft.trade.data.IndicatorPojo;
 
 public class ExcelPreparation {
 
 	public void writeExcelFile(IndicatorPojo indicatorPojo) throws IOException {
+		String[] headers = { "timestamp", "close", "high", "low", "open",
+				"volume", "ema_1", "ema_2", "macd", "signal", "histogram" };
+		Workbook workbook = new HSSFWorkbook();
+		Sheet sheet = workbook.createSheet();
+		String excelFilePath = "NiceJavaBooks.xls";
 
-		   ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		// Create blank workbook
-		XSSFWorkbook workbook = new XSSFWorkbook();
-		// Create a blank sheet
-		XSSFSheet spreadsheet = workbook.createSheet(" Employee Info ");
-		// Create row object
-		XSSFRow row;
-		// This data needs to be written (Object[])
-		Map<String, Object[]> empinfo = new TreeMap<String, Object[]>();
-		empinfo.put("1", new Object[] { "EMP ID", "EMP NAME", "DESIGNATION" });
-		empinfo.put("2", new Object[] { "tp01", "Gopal", "Technical Manager" });
-		empinfo.put("3", new Object[] { "tp02", "Manisha", "Proof Reader" });
-		empinfo.put("4", new Object[] { "tp03", "Masthan", "Technical Writer" });
-		empinfo.put("5", new Object[] { "tp04", "Satish", "Technical Writer" });
-		empinfo.put("6", new Object[] { "tp05", "Krishna", "Technical Writer" });
-		// Iterate over data and write to sheet
-		Set<String> keyid = empinfo.keySet();
-		int rowid = 0;
-		for (String key : keyid) {
-			row = spreadsheet.createRow(rowid++);
-			Object[] objectArr = empinfo.get(key);
-			int cellid = 0;
-			for (Object obj : objectArr) {
-				Cell cell = row.createCell(cellid++);
-				cell.setCellValue((String) obj);
-			}
+		int rowCount = 1;
+		writeTitleForBook(headers, sheet.createRow(0));
+		for (DataFeed dataFeed : indicatorPojo.getResultedDataFeed()) {
+			Row row = sheet.createRow(++rowCount);
+			writeBookValues(dataFeed, row);
 		}
-		
-		// Write the workbook in file system
-		FileOutputStream out = new FileOutputStream(new File("Writesheet.xlsx"));
-		workbook.write(out);
-		out.close();
-		System.out.println("Writesheet.xlsx written successfully");
+
+		try (FileOutputStream outputStream = new FileOutputStream(excelFilePath)) {
+			workbook.write(outputStream);
+		}
+	}
+
+	public void writeBookValues(DataFeed dataFeed, Row row) {
+		Cell cell = row.createCell(0);
+		cell.setCellValue(dataFeed.getTimestamp());
+
+		cell = row.createCell(1);
+		cell.setCellValue(dataFeed.getClose());
+
+		cell = row.createCell(2);
+		cell.setCellValue(dataFeed.getHigh());
+
+		cell = row.createCell(3);
+		cell.setCellValue(dataFeed.getLow());
+
+		cell = row.createCell(4);
+		cell.setCellValue(dataFeed.getOpen());
+
+		cell = row.createCell(5);
+		cell.setCellValue(dataFeed.getVolume());
+
+		cell = row.createCell(6);
+		cell.setCellValue(dataFeed.getEma_1());
+
+		cell = row.createCell(7);
+		cell.setCellValue(dataFeed.getEma_2());
+
+		cell = row.createCell(8);
+		cell.setCellValue(dataFeed.getMacd());
+
+		cell = row.createCell(9);
+		cell.setCellValue(dataFeed.getSignal());
+
+		cell = row.createCell(10);
+		cell.setCellValue(dataFeed.getHistogram());
 
 	}
+
+	public void writeTitleForBook(String[] headers, Row row) {
+
+		for (int i = 0; i < headers.length; i++) {
+			Cell cell = row.createCell(i);
+			cell.setCellValue(headers[i]);
+		}
+
+	}
+
 }
