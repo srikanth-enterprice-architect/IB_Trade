@@ -9,18 +9,5 @@
 	<classpathentry kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry kind="src" path="src/main/api"/>
 	<classpathentry kind="src" path="src/test/munit"/>
-	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/poi-3.15/ooxml-lib/xmlbeans-2.6.0.jar"/>
-	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/poi-3.15/poi-3.15.jar"/>
-	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/poi-3.15/poi-examples-3.15.jar"/>
-	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/poi-3.15/poi-excelant-3.15.jar"/>
-	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/poi-3.15/poi-ooxml-3.15.jar"/>
-	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/poi-3.15/poi-ooxml-schemas-3.15.jar"/>
-	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/poi-3.15/poi-scratchpad-3.15.jar"/>
-	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/poi-3.15/ooxml-lib/curvesapi-1.04.jar"/>
-	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/poi-3.15/lib/commons-codec-1.10.jar"/>
-	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/poi-3.15/lib/commons-collections4-4.1.jar"/>
-	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/poi-3.15/lib/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/poi-3.15/lib/junit-4.12.jar"/>
-	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/poi-3.15/lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
