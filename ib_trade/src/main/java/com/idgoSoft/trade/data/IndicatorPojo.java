@@ -19,8 +19,6 @@ public class IndicatorPojo {
 	private double average2;
 	private List<HashMap<String,String>> objectTomap;
 	
-	
-
 	public List<HashMap<String, String>> getObjectTomap() {
 		return objectTomap;
 	}

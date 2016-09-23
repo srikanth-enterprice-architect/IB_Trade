@@ -185,4 +185,16 @@ public class DataFeed {
 	this.volume = volume;
     }
 
+	@Override
+	public String toString() {
+		return "DataFeed [timestamp=" + timestamp + ", close=" + close
+				+ ", high=" + high + ", low=" + low + ", open=" + open
+				+ ", volume=" + volume + ", macd=" + macd + ", ema_1=" + ema_1
+				+ ", ema_2=" + ema_2 + ", signal=" + signal + ", histogram="
+				+ histogram + "]";
+	}
+    
+    
+    
+
 }

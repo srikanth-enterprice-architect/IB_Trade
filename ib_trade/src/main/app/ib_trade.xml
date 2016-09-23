@@ -36,6 +36,5 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
         <set-payload value="#[payload.substring(30,payload.length()-2)]" doc:name="Set Payload"/>
         <json:json-to-object-transformer returnClass="java.lang.Object" doc:name="JSON to Object"/>
         <invoke object-ref="transformer" method="dataFeedPreparation" methodArguments="#[payload.series]" methodArgumentTypes="java.util.ArrayList" doc:name="Transformer"/>
-        <file:outbound-endpoint path="/home/srikanth.vaddella/Desktop" outputPattern="sr.xlsx" connector-ref="File" responseTimeout="10000" doc:name="File" mimeType="application/csv"/>
     </flow>
 </mule>
