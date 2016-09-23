@@ -11,7 +11,7 @@ import java.util.function.BiConsumer;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
-import com.IdgoSoft.Trade.core.excel.ExcelPreparation;
+import com.idgoSoft.trade.core.excel.ExcelPreparation;
 import com.idgoSoft.trade.data.DataFeed;
 import com.idgoSoft.trade.data.IndicatorPojo;
 
@@ -23,10 +23,14 @@ public class Transformer {
 
 	private IndicatorPojo indicatorPojo;
 	ToDoubleFunction<DataFeed> averageCaluction = dataFeed -> {
-		return dataFeed.getClose();	};
+		System.out.println(dataFeed.getClose());
+		return dataFeed.getClose();
+	};
 	
 	ToDoubleFunction<DataFeed> averageCaluction1 = dataFeed -> {
-		return dataFeed.getMacd();	};
+		System.out.println(dataFeed.getClose());
+		return dataFeed.getMacd();
+	};
 
 	/**
 	 * @param listOfStockData
@@ -70,10 +74,17 @@ public class Transformer {
 	 */
 	public IndicatorPojo dataFeedCalPreparation(IndicatorPojo indicatorPojo) {
 
-		indicatorPojo.setAverage(indicatorPojo.getDatafeedList().stream().limit(12).collect(Collectors.averagingDouble(averageCaluction)));
-		indicatorPojo.setAverage2(indicatorPojo.getDatafeedList().stream().limit(26).collect(Collectors.averagingDouble(averageCaluction)));
-		List<DataFeed> listOfDatafeed = indicatorPojo.getDatafeedList().stream().collect(
-				        ArrayList<DataFeed>::new,
+		indicatorPojo.setAverage(indicatorPojo.getDatafeedList().stream()
+				.limit(12)
+				.collect(Collectors.averagingDouble(averageCaluction)));
+		indicatorPojo.setAverage2(indicatorPojo.getDatafeedList().stream()
+				.limit(26)
+				.collect(Collectors.averagingDouble(averageCaluction)));
+		List<DataFeed> listOfDatafeed = indicatorPojo
+				.getDatafeedList()
+				.stream()
+				.skip(12)
+				.collect(ArrayList<DataFeed>::new,
 						caluclateIndicators(indicatorPojo),
 						ArrayList<DataFeed>::addAll);
 		indicatorPojo.setResultedDataFeed(listOfDatafeed);
