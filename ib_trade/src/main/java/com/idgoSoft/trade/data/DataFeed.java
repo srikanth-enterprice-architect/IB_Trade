@@ -20,11 +20,71 @@ public class DataFeed {
     private double ema_2;
     private double signal;
     private double histogram;
+    private double highest_High;
+    private double lowest_Low;
+    private double persentage_of__k;
+    private double persentage_of__d;
 
 
     
 
     /**
+	 * @return the highest_High
+	 */
+	public double getHighest_High() {
+		return highest_High;
+	}
+
+	/**
+	 * @param highest_High the highest_High to set
+	 */
+	public void setHighest_High(double highest_High) {
+		this.highest_High = highest_High;
+	}
+
+	/**
+	 * @return the lowest_Low
+	 */
+	public double getLowest_Low() {
+		return lowest_Low;
+	}
+
+	/**
+	 * @param lowest_Low the lowest_Low to set
+	 */
+	public void setLowest_Low(double lowest_Low) {
+		this.lowest_Low = lowest_Low;
+	}
+
+	/**
+	 * @return the persentage_of__k
+	 */
+	public double getPersentage_of__k() {
+		return persentage_of__k;
+	}
+
+	/**
+	 * @param persentage_of__k the persentage_of__k to set
+	 */
+	public void setPersentage_of__k(double persentage_of__k) {
+		this.persentage_of__k = persentage_of__k;
+	}
+
+	/**
+	 * @return the persentage_of__d
+	 */
+	public double getPersentage_of__d() {
+		return persentage_of__d;
+	}
+
+	/**
+	 * @param persentage_of__d the persentage_of__d to set
+	 */
+	public void setPersentage_of__d(double persentage_of__d) {
+		this.persentage_of__d = persentage_of__d;
+	}
+
+	/**
 	 * @return the signal
 	 */
 	public double getSignal() {
