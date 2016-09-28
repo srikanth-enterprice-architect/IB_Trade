@@ -23,12 +23,10 @@ public class Transformer {
 
 	private IndicatorPojo indicatorPojo;
 	ToDoubleFunction<DataFeed> averageCaluction = dataFeed -> {
-		System.out.println(dataFeed.getClose());
 		return dataFeed.getClose();
 	};
 	
 	ToDoubleFunction<DataFeed> averageCaluction1 = dataFeed -> {
-		System.out.println(dataFeed.getClose());
 		return dataFeed.getMacd();
 	};
 
@@ -74,20 +72,13 @@ public class Transformer {
 	 */
 	public IndicatorPojo dataFeedCalPreparation(IndicatorPojo indicatorPojo) {
 
-		indicatorPojo.setAverage(indicatorPojo.getDatafeedList().stream()
-				.limit(12)
-				.collect(Collectors.averagingDouble(averageCaluction)));
-		indicatorPojo.setAverage2(indicatorPojo.getDatafeedList().stream()
-				.limit(26)
-				.collect(Collectors.averagingDouble(averageCaluction)));
-		List<DataFeed> listOfDatafeed = indicatorPojo
-				.getDatafeedList()
-				.stream()
-				.skip(12)
-				.collect(ArrayList<DataFeed>::new,
-						caluclateIndicators(indicatorPojo),
-						ArrayList<DataFeed>::addAll);
+		indicatorPojo.setAverage(indicatorPojo.getDatafeedList().stream().limit(12).collect(Collectors.averagingDouble(averageCaluction)));
+		indicatorPojo.setAverage2(indicatorPojo.getDatafeedList().stream().limit(26).collect(Collectors.averagingDouble(averageCaluction)));
+		List<DataFeed> listOfDatafeed = indicatorPojo.getDatafeedList().stream().skip(12).collect(ArrayList<DataFeed>::new,caluclateMacdIndicator(indicatorPojo),ArrayList<DataFeed>::addAll);
 		indicatorPojo.setResultedDataFeed(listOfDatafeed);
+		/*List<DataFeed> listOfDatafeedWithKdjIndicator = indicatorPojo.getDatafeedList().stream().collect(ArrayList<DataFeed>::new,caluclateKdjIndicator(indicatorPojo),ArrayList<DataFeed>::addAll);
+		indicatorPojo.setResultedDataFeed(listOfDatafeedWithKdjIndicator);*/
+		
 		return indicatorPojo;
 
 	}
@@ -96,9 +87,17 @@ public class Transformer {
 	 * @param indicatorPojo
 	 * @return
 	 */
-	public BiConsumer<ArrayList<DataFeed>, DataFeed> caluclateIndicators(
+	public BiConsumer<ArrayList<DataFeed>, DataFeed> caluclateKdjIndicator(IndicatorPojo indicatorPojo) {
+		return (list, name) -> caluclateKDJ(indicatorPojo, list, name);
+	}
+
+	/**
+	 * @param indicatorPojo
+	 * @return
+	 */
+	public BiConsumer<ArrayList<DataFeed>, DataFeed> caluclateMacdIndicator(
 			IndicatorPojo indicatorPojo) {
-		return (list, name) -> caluclate(indicatorPojo, list, name);
+		return (list, name) -> caluclateMacd(indicatorPojo, list, name);
 	}
 
 	/**
@@ -106,7 +105,7 @@ public class Transformer {
 	 * @param list
 	 * @param name
 	 */
-	public void caluclate(IndicatorPojo indicatorPojo,	ArrayList<DataFeed> list, DataFeed dataFeed) {
+	public void caluclateMacd(IndicatorPojo indicatorPojo,	ArrayList<DataFeed> list, DataFeed dataFeed) {
 		int size = list.size();
 		double a = (12+1);
 		double a1 = (2/a);
@@ -138,12 +137,50 @@ public class Transformer {
 		}
 
 		if (size > 33) {
-			dataFeed.setSignal(dataFeed.getMacd() * c1 + (list.get(size-1).getSignal() - 1) * (1 - c1));
+			dataFeed.setSignal(dataFeed.getMacd() * c1 + (list.get(size-1).getSignal()) * (1 - c1));
 			dataFeed.setHistogram(dataFeed.getMacd() - dataFeed.getSignal());
 		}
 		
 		System.out.println(dataFeed.toString());
 		list.add(dataFeed);
 	}
+	
+	
+	/**
+	 * @param indicatorPojo
+	 * @param list
+	 * @param name
+	 */
+	public void caluclateKDJ(IndicatorPojo indicatorPojo,	ArrayList<DataFeed> list, DataFeed dataFeed) {
+		java.util.Comparator<? super Double> hightValue = (hightValueOld ,hightValueNew) -> hightValueOld.compareTo(hightValueNew);
+		dataFeed.setHighest_High(list.subList(list.size()-14, list.size()).stream().map(DataFeed::getHigh).max(hightValue).get());
+		dataFeed.setLowest_Low(list.subList(list.size()-14, list.size()).stream().map(DataFeed::getLow).max(hightValue).get());
+		dataFeed.setPersentage_of__k(dataFeed.getClose() - dataFeed.getLowest_Low() / dataFeed.getHighest_High() - dataFeed.getLowest_Low() * 100);
+		dataFeed.setPersentage_of__d(list.subList(list.size()-3, list.size()).stream().sequential().collect(Collectors.averagingDouble( K -> K.getPersentage_of__k())));
+		list.add(dataFeed);
 
+	}
+	
 }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
