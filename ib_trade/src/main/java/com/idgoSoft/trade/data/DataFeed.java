@@ -24,11 +24,27 @@ public class DataFeed {
     private double lowest_Low;
     private double persentage_of__k;
     private double persentage_of__d;
+    private String ticker;
 
 
     
+    
 
     /**
+	 * @return the ticker
+	 */
+	public String getTicker() {
+		return ticker;
+	}
+
+	/**
+	 * @param ticker the ticker to set
+	 */
+	public void setTicker(String ticker) {
+		this.ticker = ticker;
+	}
+
+	/**
 	 * @return the highest_High
 	 */
 	public double getHighest_High() {
