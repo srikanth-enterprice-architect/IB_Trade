@@ -11,7 +11,6 @@ import java.util.function.BiConsumer;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
-import com.idgoSoft.trade.core.excel.ExcelPreparation;
 import com.idgoSoft.trade.data.DataFeed;
 import com.idgoSoft.trade.data.IndicatorPojo;
 
@@ -36,14 +35,15 @@ public class Transformer {
 	 * @throws IOException 
 	 */
 	public IndicatorPojo dataFeedPreparation(
-			ArrayList<LinkedHashMap<String, ? extends Number>> listOfStockData) throws IOException {
+			ArrayList<LinkedHashMap<String, ? extends Number>> listOfStockData,String ticker) throws IOException {
 		indicatorPojo = new IndicatorPojo();
+		indicatorPojo.setTicker(ticker);
 		indicatorPojo.setDatafeedList(listOfStockData.parallelStream().collect(
 				ArrayList::new, convertDataFeedMaptoListofDatafeed(),
 				ArrayList::addAll));
 		dataFeedCalPreparation(indicatorPojo);
-		ExcelPreparation excelPreparation = new ExcelPreparation();
-		excelPreparation.writeExcelFile(indicatorPojo);
+		/*ExcelPreparation excelPreparation = new ExcelPreparation();
+		excelPreparation.writeExcelFile(indicatorPojo);*/
 		return indicatorPojo;
 
 	}
@@ -61,6 +61,7 @@ public class Transformer {
 			dataFeed.setOpen((Double) dataFeedData.get("open"));
 			dataFeed.setVolume((int) dataFeedData.get("volume"));
 			dataFeed.setTimestamp((int) dataFeedData.get("Timestamp"));
+			dataFeed.setTicker(indicatorPojo.getTicker());
 			dataFeedList.add(dataFeed);
 		};
 		return accumulator;
@@ -74,10 +75,10 @@ public class Transformer {
 
 		indicatorPojo.setAverage(indicatorPojo.getDatafeedList().stream().limit(12).collect(Collectors.averagingDouble(averageCaluction)));
 		indicatorPojo.setAverage2(indicatorPojo.getDatafeedList().stream().limit(26).collect(Collectors.averagingDouble(averageCaluction)));
-		List<DataFeed> listOfDatafeed = indicatorPojo.getDatafeedList().stream().skip(12).collect(ArrayList<DataFeed>::new,caluclateMacdIndicator(indicatorPojo),ArrayList<DataFeed>::addAll);
+		List<DataFeed> listOfDatafeed = indicatorPojo.getDatafeedList().stream().collect(ArrayList<DataFeed>::new,caluclateMacdIndicator(indicatorPojo),ArrayList<DataFeed>::addAll);
 		indicatorPojo.setResultedDataFeed(listOfDatafeed);
-		/*List<DataFeed> listOfDatafeedWithKdjIndicator = indicatorPojo.getDatafeedList().stream().collect(ArrayList<DataFeed>::new,caluclateKdjIndicator(indicatorPojo),ArrayList<DataFeed>::addAll);
-		indicatorPojo.setResultedDataFeed(listOfDatafeedWithKdjIndicator);*/
+		List<DataFeed> listOfDatafeedWithKdjIndicator = indicatorPojo.getResultedDataFeed().stream().collect(ArrayList<DataFeed>::new,caluclateKdjIndicator(indicatorPojo),ArrayList<DataFeed>::addAll);
+		indicatorPojo.setResultedDataFeed(listOfDatafeedWithKdjIndicator);
 		
 		return indicatorPojo;
 
@@ -122,6 +123,9 @@ public class Transformer {
 		if (size > 11) {
 			dataFeed.setEma_1(dataFeed.getClose() * a1 + (list.get(size - 1).getEma_1()) * (1 - a1));
 		}
+		if (size > 13) {
+			dataFeed.setEma_1(dataFeed.getClose() * a1 + (list.get(size - 1).getEma_1()) * (1 - a1));
+		}
 		if (size == 25) {
 			dataFeed.setEma_2(indicatorPojo.getAverage2());
 			dataFeed.setMacd(dataFeed.getEma_1() - dataFeed.getEma_2());
@@ -141,7 +145,6 @@ public class Transformer {
 			dataFeed.setHistogram(dataFeed.getMacd() - dataFeed.getSignal());
 		}
 		
-		System.out.println(dataFeed.toString());
 		list.add(dataFeed);
 	}
 	
@@ -152,14 +155,25 @@ public class Transformer {
 	 * @param name
 	 */
 	public void caluclateKDJ(IndicatorPojo indicatorPojo,	ArrayList<DataFeed> list, DataFeed dataFeed) {
+		int size = list.size();
+		if (size > 12) {
+			List<DataFeed> p1 = list.subList(size-13, list.size());
+			p1.add(dataFeed);
 		java.util.Comparator<? super Double> hightValue = (hightValueOld ,hightValueNew) -> hightValueOld.compareTo(hightValueNew);
-		dataFeed.setHighest_High(list.subList(list.size()-14, list.size()).stream().map(DataFeed::getHigh).max(hightValue).get());
-		dataFeed.setLowest_Low(list.subList(list.size()-14, list.size()).stream().map(DataFeed::getLow).max(hightValue).get());
-		dataFeed.setPersentage_of__k(dataFeed.getClose() - dataFeed.getLowest_Low() / dataFeed.getHighest_High() - dataFeed.getLowest_Low() * 100);
-		dataFeed.setPersentage_of__d(list.subList(list.size()-3, list.size()).stream().sequential().collect(Collectors.averagingDouble( K -> K.getPersentage_of__k())));
+		dataFeed.setHighest_High(p1.stream().map(DataFeed::getHigh).max(hightValue).get());
+		dataFeed.setLowest_Low(p1.stream().map(DataFeed::getLow).min(hightValue).get());
+		dataFeed.setPersentage_of__k(((dataFeed.getClose() - dataFeed.getLowest_Low()) / (dataFeed.getHighest_High() - dataFeed.getLowest_Low())) * 100);
+		}
+		if (size  > 14) {
+		List<DataFeed> p = list.subList(size-2, size);
+		p.add(dataFeed);
+		dataFeed.setPersentage_of__d(p.stream().mapToDouble( K -> K.getPersentage_of__k()).average().getAsDouble());
+	
+		}
 		list.add(dataFeed);
 
 	}
+	
 	
 }
 	
