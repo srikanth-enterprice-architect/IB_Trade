@@ -18,7 +18,24 @@ public class IndicatorPojo {
 	private double average;
 	private double average2;
 	private List<HashMap<String,String>> objectTomap;
+	private String ticker;
 	
+	
+	
+	
+	
+	/**
+	 * @return the ticker
+	 */
+	public String getTicker() {
+		return ticker;
+	}
+	/**
+	 * @param ticker the ticker to set
+	 */
+	public void setTicker(String ticker) {
+		this.ticker = ticker;
+	}
 	public List<HashMap<String, String>> getObjectTomap() {
 		return objectTomap;
 	}
