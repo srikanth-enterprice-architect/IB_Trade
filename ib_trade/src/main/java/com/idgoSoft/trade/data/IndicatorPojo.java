@@ -21,9 +21,6 @@ public class IndicatorPojo {
 	private String ticker;
 	
 	
-	
-	
-	
 	/**
 	 * @return the ticker
 	 */

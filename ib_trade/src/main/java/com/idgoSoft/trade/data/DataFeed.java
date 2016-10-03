@@ -26,8 +26,6 @@ public class DataFeed {
     private double persentage_of__d;
     private String ticker;
 
-
-    
     
 
     /**
@@ -261,14 +259,22 @@ public class DataFeed {
 	this.volume = volume;
     }
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "DataFeed [timestamp=" + timestamp + ", close=" + close
 				+ ", high=" + high + ", low=" + low + ", open=" + open
 				+ ", volume=" + volume + ", macd=" + macd + ", ema_1=" + ema_1
 				+ ", ema_2=" + ema_2 + ", signal=" + signal + ", histogram="
-				+ histogram + "]";
+				+ histogram + ", highest_High=" + highest_High
+				+ ", lowest_Low=" + lowest_Low + ", persentage_of__k="
+				+ persentage_of__k + ", persentage_of__d=" + persentage_of__d
+				+ ", ticker=" + ticker + "]";
 	}
+
+	
     
     
     
