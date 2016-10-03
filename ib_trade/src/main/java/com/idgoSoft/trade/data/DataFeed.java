@@ -25,9 +25,6 @@ public class DataFeed {
     private double persentage_of__k;
     private double persentage_of__d;
     private String ticker;
-    
-    
-
 
     
 

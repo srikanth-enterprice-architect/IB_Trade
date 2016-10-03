@@ -21,10 +21,6 @@ public class IndicatorPojo {
 	private String ticker;
 	
 	
-	
-	
-	
-	
 	/**
 	 * @return the ticker
 	 */
@@ -37,7 +33,6 @@ public class IndicatorPojo {
 	public void setTicker(String ticker) {
 		this.ticker = ticker;
 	}
-	
 	public List<HashMap<String, String>> getObjectTomap() {
 		return objectTomap;
 	}
