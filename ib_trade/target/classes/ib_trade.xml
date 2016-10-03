@@ -81,7 +81,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
         <set-payload value="#[payload.substring(30,payload.length()-2)]" doc:name="Set Payload"/>
         <json:json-to-object-transformer returnClass="java.lang.Object" doc:name="JSON to Object"/>
 		<invoke object-ref="transformer" method="dataFeedPreparation"
-			methodArguments="#[payload.series]" methodArgumentTypes="java.util.ArrayList"
+			methodArguments="#[payload.series],#[payload.meta.ticker]" methodArgumentTypes="java.util.ArrayList,java.lang.String"
 			doc:name="Transformer" />
         <set-payload value="#[payload.resultedDataFeed]" doc:name="Set Payload"/>
 		<db:insert config-ref="MySQL_Configuration" doc:name="Insert Indicator"
