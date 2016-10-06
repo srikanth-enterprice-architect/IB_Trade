@@ -10,5 +10,6 @@
 	<classpathentry exported="true" kind="con" path="MULE_RUNTIME/org.mule.tooling.server.3.7.3.ee"/>
 	<classpathentry kind="src" path="src/test/munit"/>
 	<classpathentry kind="lib" path="/home/srikanth.vaddella/Downloads/com.mysql.jdbc_5.1.5.jar"/>
+	<classpathentry kind="con" path="MUNIT_RUNTIME"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

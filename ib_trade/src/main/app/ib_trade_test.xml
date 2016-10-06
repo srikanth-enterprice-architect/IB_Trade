@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:synchronize="http://www.mulesoft.org/schema/mule/synchronize"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/synchronize http://www.mulesoft.org/schema/mule/synchronize/current/mule-synchronize.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+	<vm:connector name="VM2" validateConnections="true"
+		doc:name="VM" />
+	<flow name="testfileFlow">
+		<vm:inbound-endpoint exchange-pattern="request-response"
+			path="sri" connector-ref="VM2" doc:name="VM" />
+		<logger level="INFO" doc:name="Logger" />
+		<set-payload value="#['hi']" doc:name="Set Payload" />
+	</flow>
+
+
+</mule>
