@@ -16,8 +16,7 @@ import com.IdgoSoft.test.intigration.Munit.PerformanceFunctionalMunitSuiteTest;
  * @author srikanth.vaddella
  *
  */
-public class Ib_trade_FunctionalMunitSuiteTest extends
-		PerformanceFunctionalMunitSuiteTest {
+public class Ib_trade_FunctionalMunitSuiteTest extends PerformanceFunctionalMunitSuiteTest {
 
 	/**
 	 * @throws Exception
@@ -25,23 +24,20 @@ public class Ib_trade_FunctionalMunitSuiteTest extends
 	@org.junit.Test
 	public void Test() throws Exception {
 		String myStringPayload = "hi";
-		MuleEvent resultMuleEvent = runFlow("testfileFlow",
-				testEvent(myStringPayload));
-		Assert.assertEquals(myStringPayload, resultMuleEvent.getMessage()
-				.getPayload());
+		MuleEvent resultMuleEvent = runFlow("testfileFlow", testEvent(myStringPayload));
+		Assert.assertEquals(myStringPayload, resultMuleEvent.getMessage().getPayload());
 	}
 
 	/**
 	 * @throws Exception
 	 */
 	@org.junit.Test
-	public void MockingTest() throws Exception {
+	public void mockingTest() throws Exception {
 		String myMockPayload = "815-OA";
 		MuleMessage messageToBeReturned = muleMessageWithPayload(myMockPayload);
-		MessageProcessorMocker mocker = whenMessageProcessor("select")
-				.ofNamespace("db");
+		MessageProcessorMocker mocker = whenMessageProcessor("select").ofNamespace("db");
 		mocker.thenReturn(messageToBeReturned);
-		MuleEvent resultMuleEvent = runFlow("myFlow", testEvent("example"));
+		final MuleEvent resultMuleEvent = runFlow("myFlow", testEvent("example"));
 		Assert.assertEquals("815", resultMuleEvent.getMessage().getPayload());
 	}
 
@@ -55,13 +51,13 @@ public class Ib_trade_FunctionalMunitSuiteTest extends
 		MessageProcessorMocker mocker = whenMessageProcessor("set-payload");
 		mocker.thenReturn(messageToBeReturned);
 		MuleEvent resultMuleEvent = runFlow("myFlow", testEvent("example"));
-		Assert.assertEquals(myMockPayload, resultMuleEvent.getMessage()
-				.getPayload());
+		Assert.assertEquals(myMockPayload, resultMuleEvent.getMessage().getPayload());
 	}
 
 	/**
 	 * @throws Exception
 	 */
+	
 	@org.junit.Test
 	public void SpyTest() throws Exception {
 		SpyProcess beforeSpy = new SpyProcess() {
@@ -78,8 +74,7 @@ public class Ib_trade_FunctionalMunitSuiteTest extends
 				Assert.assertEquals(2, event.getMessage().getPayload());
 			}
 		};
-		spyMessageProcessor("set-payload").ofNamespace("mule")
-				.before(beforeSpy).after(afterSpy);
+		spyMessageProcessor("set-payload").ofNamespace("mule").before(beforeSpy).after(afterSpy);
 
 		runFlow("myFlow", testEvent(1));
 	}
@@ -90,8 +85,7 @@ public class Ib_trade_FunctionalMunitSuiteTest extends
 	@org.junit.Test
 	public void VerifyTest() throws Exception {
 		runFlow("choiceFlow", testEvent(1));
-		verifyCallOfMessageProcessor("set-payload").ofNamespace("mule")
-				.times(1);
+		verifyCallOfMessageProcessor("set-payload").ofNamespace("mule").times(1);
 	}
 
 }
