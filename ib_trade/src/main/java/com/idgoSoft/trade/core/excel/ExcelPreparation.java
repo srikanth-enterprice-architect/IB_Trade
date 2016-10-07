@@ -15,10 +15,10 @@ import com.idgoSoft.trade.data.IndicatorPojo;
 public class ExcelPreparation {
 
 	public void writeExcelFile(IndicatorPojo indicatorPojo) throws IOException {
-		String[] headers = { "timestamp", "close", "high", "low", "open",
-				"volume", "ema_1", "ema_2", "macd", "signal", "histogram","highest_High","lowest_Low","%k","%d"
+		String[] headers = { "timestamp", "close", "high", "low", "open", "volume", "ema_1", "ema_2", "macd", "signal",
+				"histogram", "highest_High", "lowest_Low", "%k", "%d"
 
-};
+		};
 		Workbook workbook = new HSSFWorkbook();
 		Sheet sheet = workbook.createSheet();
 		String excelFilePath = "NiceJavaBooks.xls";
